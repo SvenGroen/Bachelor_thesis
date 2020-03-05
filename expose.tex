@@ -28,7 +28,7 @@
 \usepackage{bbm} % \mathbb on numerals.
 \usepackage{csquotes}
 \usepackage{mathtools}
-\usepackage[ruled,vlined]{algorithm2e} % Pseudocode
+\usepackage[ruled,vlined]{algorithm2e} %Pseudocode
 \usepackage{scrhack} % Make warning go away.
 \usepackage{graphicx}
 \usepackage{subcaption} % Subfigures with subcaptions.
@@ -149,7 +149,7 @@ doi=true,isbn=false,url=false, eprint=false]{biblatex}
 
 
 % TODO Fill with your data.
-\title{My full title}
+\title{Image Segmentation}
 \author{Sven Groen}
 
 \begin{document}
@@ -163,7 +163,7 @@ doi=true,isbn=false,url=false, eprint=false]{biblatex}
 
 	\vspace{2cm}
 	\centering{
-		Bachelorthesis\vspace{1cm}\\
+		Bachelorthesis - Expose \vspace{1cm}\\
 		\textbf{\Large{\MyTitle}}
 		\vspace{1cm}\\
 		\begin{tabular}{c}
@@ -186,20 +186,8 @@ doi=true,isbn=false,url=false, eprint=false]{biblatex}
 \end{titlepage}
 
 
-\chapter*{Declaration of Authorship}
-I hereby certify that the work presented here is, to the best of my knowledge and belief, original and the result of my own investigations, except as acknowledged, and has not been submitted, either in part or whole, for a degree at this or any other university.
-
-\namesigdate
 \pagenumbering{gobble}
 \pagebreak
-
-\begin{abstract}
-	\textbf{\LARGE{Abstract}}\\\\
-	%TODO summarize the main objectives and outcomes of your work. The abstract should fit on one page.
-	This is the abstract.
-\end{abstract}
-
-
 
 
 \tableofcontents
@@ -208,49 +196,103 @@ I hereby certify that the work presented here is, to the best of my knowledge an
 \listofalgorithms
 
 
-\chapter{Introduction}
+\chapter{Goal and background information}
 \pagenumbering{arabic}
-\blindtext
+
+\section{Cooperation with Imanox}
+This project is realized in cooperation with \href{https://www.imanox.de/}{Imanox} . 
+Imanox is a Berlin-based Startup that developed a smart photo booth for expositions, events and promotions. 
+This photo booth enables customers virtual product placements using augmented and mixed reality. 
+Main features are hand-tracking, digital masks and changing virtual backgrounds.
+
+\section{Virtual backgrounds}
+Currently, the photo booth has a build in depth sensor that measures the distance of objects by casting illumination onto the scene and indirectly measuring the time it takes to travel back to the camera. 
+The camera struggles with correctly predicting the depth in certain situations. 
+Pixels are rendered as invalid and no depth information is provided. 
+The reasons for this are numerous. 
+Pixels might get under saturated (signal is not strong enough) or over saturated (signal is too strong). 
+Other artifacts occur due to the geometry of the scene. 
+The sensors of the camera might receive signals from multiple locations in the scene, leading to an ambiguous depth. 
+Especially around the edges and borders of objects pixels contain mixed signals from fore-and background leading to blurred outlines.
+In the current version of the photo booth alpha values (0 to 1) are calculated based on the data from the depth sensor. 
+Objects in the foreground receive high alpha values and the background is considered to have an alpha value of 0, making it transparent. 
+In this way the background can be virtually replaced without affecting the objects in the foreground. 
+Due to the described inaccurate data that is given by the depth sensor the result is of low quality. 
+The edges and borders of the objects/people in the scene are not sharp and often misclassified. 
+Especially for small / thin objects, \eg hair, the camera hardly recognizes it and parts of the hair are therefore considered as background and are also replaced by the virtual background.
+For more detailed information on this issue I refer to \url{https://docs.microsoft.com/de-de/azure/Kinect-dk/depth-camera}.
+\cite{Microsoft2019}
+
+\section{Goal of the thesis}
+The goal of this bachelor thesis is to improve the quality of the semantic segmentation of the current Imanox photo booth using machine learning techniques.
+We will use ...
+
+\chapter{Segmentation}
+\textcite{Szeliski2011} refers to image segmentation as "the task of finding groups of pixels that 'go together' " (p. 237).
+In the following semantic segmentation refers to a pixel-wise classification of an image \cite{Mittal2020}.
+In the classical image classification tasks the task is to name the objects that can be seen in an image.
+Semantic segmentation extends this problem further. 
+Each pixel in an image is assigned to one category label given a set of categories.
+However, individual instances of an object in one image are not differentiated.
+When individual instances in an image should be recognized, object detection is necessary.
+For single objects this would be a classification + localization task. 
+Object detection is usually realized by framing the object with a box and assigning a category label to each box.
+Lastly, there is instance segmentation. 
+Instance segmentation extends the problem of object detection by a pixel-wise classification (similar to semantic segmentation) but with instances being differentiated \cite{Mittal2020}.
+See \figref{fig:Computer_Vision_Tasks} for an overview of the described tasks.
+Given the goal of this project only semantic segmentation is necessary.
+Detailed information which objects are in the scene is not required.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\figwidth]{Computer_Vision_Tasks}
+	\slcaption{
+		Overview of Computer Vision Tasks. (\textcite{Fei-Fei2017}, Slide 17).
+		\label{fig:Computer_Vision_Tasks}}
+\end{figure}
+
+\section{related work}
+
+Segmenting an image into its individual parts is a classical problem of computer vision \cite{Szeliski2011}. 
+Early methods involve classical methods like threshold detection \cite{Smith1979}, while modern approaches like k-means clustering \cite{Dhanachandra2015} improved the results.
+Deep learning architectures, especially convolutional neural networks (CNNs) \cite{Fukushima1980}, have lead to an improvement in performance whereas classical methods have seem to reach a plateau \figref{fig:Object_Detect_impact_of_DL}.
+\textcite{Shelhamer2017} have been the first to proposed a CNN architecture where a pixel-wise supervised training was achieved. 
+This was done by upsampling the class prediction layer to the input image size, leading to a pixel-wise classification.
+Following papers proposed different architectures. \textcite{Chen2018} proposed a combination of Deep CNNs with fully connected conditional random fields (CRFs) that tries to grasp the semantic context of the image.
+\textcite{Noh2015} suggested a "Deconvolutional Network" with special unpooling and deconvolution operations.
+A similar Encoder-Decoder architecture has been proposed by \textcite{Badrinarayanan2017}.
+
+
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=\figwidth]{scientific_paper_graph_quality}
+	\includegraphics[width=\figwidth]{Object_Detect_impact_of_DL}
 	\slcaption{
-		Developmemt of scientific paper graph quality. A dip in the
-		quality of scientific graphs is observed from the early 1990s to the early 2010s.
-		During this time Microsoft Paint and PowerPoint were often used to create graphs in scientific papers.\label{fig:scientific_graph_quality}}
+		Mean average precission (mAP) of object detection before and after using deep learning techniques. (\textcite{Fei-Fei2017}, Slide 54).
+		\label{fig:Object_Detect_impact_of_DL}}
 \end{figure}
 
-\begin{table}[H]
-	\begin{tabular}{@{}ll@{}}
-		\toprule
-		year & quality \\ \midrule
-		1985 & good    \\
-		2000 & bad     \\ \midrule
-		2015 & better  \\ \bottomrule
-	\end{tabular}
-	\caption{
-		Empirical measurements of scientific graph quality. Data points were collected using
-		a systematic literature review.\label{tab:scientific_graph_quality}}
-\end{table}
+\section{Challenges}
 
-This references a \figref{fig:scientific_graph_quality} while this references a table \tabref{tab:scientific_graph_quality}.
 
-A citation looks like this \cite{Mittal2020}. To embed a citation in the text flow use textcite,
-\eg \textcite{Mittal2020} said you should use a lot of citations.
+
+
+
+
+\chapter{Related work}
+
+
+
+
 
 \chapter{Methods}
 
+\section{}
 
 
-\chapter{Results and Discussion}
+\chapter{Time frame}
 
 
 \chapter{Conclusion}
-
-
-\chapter*{Acknowledgements}
-%TODO A place to say thank you to everybody who helped you.
 
 
 % Acronym definitions
