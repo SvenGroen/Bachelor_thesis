@@ -175,12 +175,12 @@ doi=true,isbn=false,url=false, eprint=false]{biblatex}
 	\vspace{1cm}
 
 	\begin{tabular}{ll}
-		First supervisor:  & Manuel Kolmet          \\
-		                   & IMANOX GmbH             \\
-		                   & Berlin                   \\\\
-		Second supervisor: & Prof. Dr. Someone Else         \\
-		                   & Institute of Cognitive Science \\
-		                   & Osnabrück
+		First supervisor:  & Dr. Ulf Krumnack          \\
+		                   & Institute of Cognitive Science            \\
+		                   & Osnabrück                \\\\
+		Second supervisor: & Manuel Kolmet         \\
+		                   & IMANOX GmbH  \\
+		                   & Berlin 
 	\end{tabular}
 
 \end{titlepage}
@@ -202,50 +202,93 @@ I hereby certify that the work presented here is, to the best of my knowledge an
 
 
 
-\tableofcontents
-\listoffigures
-\listoftables
-\listofalgorithms
+%\tableofcontents
+%\listoffigures
+%\listoftables
+%\listofalgorithms
 
 
 \chapter{Introduction}
 \pagenumbering{arabic}
-\blindtext
+\section{Motivation}
+- usually flickering between two frames of the video sequence, 
+and ghost objects or partly incorrectly segmented objects often occur only in a single frame, 
+while they are classified correctly in the next frame.\cite{Pfeuffer2_2019}
+
+\section{Goal of the thesis}
+\section{Semantic Segmentation}
+\section{Recurrent Neural Networks}
+
+Recurrent Neural Networks (RNNs) are a special kind of artificial neural network that is able to process sequential data \cite{Valipour2017, Sherstinsky2020} and "extract temporal dependencies" \cite{Hochreiter1998}.
+In Sequential data the order of the data is of importance and therefore carries information, for example speech recognition or time variant problems \cite{Hoffmann2017, Pfeuffer2_2019}.
+RNNs contain a hidden recurrent state, which enables them to process sequential data \cite{Hoffmann2017, Valipour2017}.
+Although they have been applied succesfully to many problems in the sequential data domain \cite{Sherstinsky2020}, they are often criticized for their computational complexity due to their recurrent structure \cite{Pfeuffer2_2019}.
+They are also known for struggling in learning long term dependencies \cite{Hoffmann2017}.
+
+The reason for this is the vanishing- and exploding gradient effect \cite{Hochreiter1998}.
+\textcite{Hochreiter1991} was the first to identified the vanishing gradient effect \cite{Skansi2018}.
+The gradient of the loss is used to update the models weights during the backpropagation, enabling the "learning" of the model \cite{Suzuki2017, Skansi2018}.
+The gradient of early layers of deep networks dependent on the gradient of later layers, since the gradient is propagated backwards through the network \cite{Skansi2018}.
+For recurrent neural networks this backpropagation of the gradient is called \textit{backpropagation through time} (BPTT) \figref{fig:rnn-bptt-with-gradients}, 
+where the gradient for any time step is dependent on all previous timesteps \cite{Skansi2018}.
+
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=\figwidth]{scientific_paper_graph_quality}
+	\includegraphics[width=\figwidth]{rnn-bptt-with-gradients}
 	\slcaption{
-		Developmemt of scientific paper graph quality. A dip in the
-		quality of scientific graphs is observed from the early 1990s to the early 2010s.
-		During this time Microsoft Paint and PowerPoint were often used to create graphs in scientific papers.\label{fig:scientific_graph_quality}}
+		Backpropagatiob through time (\textcite{Britz2015}).
+		\label{fig:rnn-bptt-with-gradients}}
 \end{figure}
 
-\begin{table}[H]
-	\begin{tabular}{@{}ll@{}}
-		\toprule
-		year & quality \\ \midrule
-		1985 & good    \\
-		2000 & bad     \\ \midrule
-		2015 & better  \\ \bottomrule
-	\end{tabular}
-	\caption{
-		Empirical measurements of scientific graph quality. Data points were collected using
-		a systematic literature review.\label{tab:scientific_graph_quality}}
-\end{table}
+The \textit{vanishing gradient effect} occurs since derivatives are repeatedly multiplied \cite{Skansi2018}. 
+If a gradient is zero or close to zero the amount of learning in the previous layers is very small, 
+since their gradient is very small due to their predecessors being very small \cite{Britz2015, Hochreiter1991}.
+\textcite{Pascanu2013} states that the \textit{vanishing gradient effect} occurs 
+"when long term components go exponentially fast to norm 0, 
+making it impossible for the model to learn correlation between temporally distant events."
 
-This references a \figref{fig:scientific_graph_quality} while this references a table \tabref{tab:scientific_graph_quality}.
+During an explosion of long term dependencies the \textit{exploding gradient effect} occurs \cite{Pascanu2013}.
+Here, during backpropagation the gradient can can grow exponentially with each layer \cite{Philipp2017, Hochreiter1997}.
+The \textit{learning step} would simply be to large, leading us not closer to an optimum but further away \cite{Skansi2018}.
 
-A citation looks like this \cite{Mittal2020}. To embed a citation in the text flow use textcite,
-\eg \textcite{Mittal2020} said you should use a lot of citations.
 
+
+\subsection{LSTM}
+- can be categorized as subgroup of rnn \cite{Hoffmann2017}
+
+
+LSTM structure;
+- gates control back propagation flow between each node; \cite{Valipour2017}
+- These gates can learn the optimal way to remember useful information from previous states and decide the current state. \cite{Valipour2017}
+
+
+convLSTM;
+- In contrast to the conventional LSTMs that use fully connected layers in the input-to-state and state-to-state transitions, ConvLSTM uses convolutional layers instead. \cite{Nabavi2018}
+- Their advantage is that they are translational invariant analogously to convolution layers and the required model parameters can be significantly reduced \cite{Pfeuffer2_2019}
+- They use convolutional layers in their input-to-state and state-to-state transitions instead of fully connected layers, as conventional LSTMs [8] do. \cite{Pfeuffer2_2019}
+- \cite{Pfeuffer2_2019} introduced different versions of the conv LSTMs
+
+
+
+\subsection{GRU}
+GRU structure + difference to LSTM;
+- simpler Architecture -> faster + less memory consuming \cite{Valipour2017}
+- "LSTM updates its hidden state by summation over flow after input gate and forget gate.
+   GRU however, assumes a correlation between how much to keep from the current state and 
+   how much to get from the previous state and it models this with the zt gate." \cite{Valipour2017}
+
+
+convGRU;
+
+\section{Related Work}
 \chapter{Methods}
-
-
-
-\chapter{Results and Discussion}
-
-
+\section{The Dataset}
+\section{Preprocessing}
+\section{Network Architecture}
+\section{Training}
+\chapter{Results}
+\chapter{Evaluation and Discussion}
 \chapter{Conclusion}
 
 

@@ -195,14 +195,14 @@ doi=true,isbn=false,url=false, eprint=false]{biblatex}
 \chapter{Goal and background information}
 \pagenumbering{arabic}
 
-\section{Cooperation with Imanox}
-This project is realized in cooperation with \href{https://www.imanox.de/}{Imanox} . 
-Imanox is a Berlin-based Startup that developed a smart photo booth for expositions, events and promotions. 
+\section{Cooperation with IMANOX}
+This project is realized in cooperation with \href{https://www.Imanox.de/}{IMANOX}. 
+IMANOX is a Berlin-based Startup that developed a smart photo booth for expositions, events and promotions. 
 This photo booth enables customers virtual product placements using augmented and mixed reality. 
 Main features are hand-tracking, digital masks and changing virtual backgrounds.
 
 \section{Virtual backgrounds}
-Currently, the photo booth has a built in depth sensor that measures the distance of objects by casting illumination onto the scene and indirectly measuring the time it takes to travel back to the camera. 
+Currently, the photo booth is using a built in Kinect RGB-D camera that measures the distance of objects by casting infrared illumination onto the scene and indirectly measuring the time it takes to travel back to the camera. 
 The camera struggles with correctly predicting the depth in certain situations. 
 Pixels are rendered as invalid and no depth information is provided. 
 The reasons for this are numerous. 
@@ -211,6 +211,7 @@ Other artifacts occur due to the geometry of the scene.
 The sensors of the camera might receive signals from multiple locations in the scene, leading to an ambiguous depth. 
 Especially around the edges and borders of objects pixels contain mixed signals from fore-and background leading to blurred outlines.
 In the current version of the photo booth alpha values (0 to 1) are calculated based on the data from the depth sensor. 
+This is done by applying an alpha matting algorithm \cite{Gastal2010} to the raw depth data.
 Objects in the foreground receive high alpha values and the background is considered to have an alpha value of 0, making it transparent. 
 In this way the background can be virtually replaced without affecting the objects in the foreground. 
 Due to the described inaccurate data that is given by the depth sensor the result is of low quality. 
@@ -219,13 +220,13 @@ Especially for small / thin objects, \eg hair, the camera hardly recognizes it a
 For more detailed information on this issue see \url{https://docs.microsoft.com/de-de/azure/Kinect-dk/depth-camera} \cite{Microsoft2019}.
 
 \section{Goal of the thesis}
-The goal of this bachelor thesis is to improve the quality of the semantic segmentation of the current Imanox photo booth using machine learning techniques.
+The goal of this bachelor thesis is to improve the quality of the semantic segmentation of the current IMANOX photo booth using machine learning techniques.
 The machine learning model will be one of the artificial neural network architectures (see Section~\ref{sec:related_work} for details).
 This model will be altered and changed towards the needs of the project and will be trained with custom training data (see Section~\ref{sec:Method}).
-It will be investigate whether high quality training data, which will be generated during the project, improves the visual result of the segmentation.
+It will be investigated whether high quality training data, which will be generated during the project, improves the visual result of the segmentation.
 When looking at datasets that are very commonly used for semantic segmentation, such as COCO-dataset \cite{COCO2016}, one can notice that the outlines of the target labels are very rough and not detailed.
 This might function as a bottleneck for a more detailed segmentation, one that would be able to grasp details such as hair.
-The exact plan of how this detailed segmentation is achieved are not set yet.
+The exact plan of how this detailed segmentation is achieved is not set yet.
 Since the problem boils down to identifying the depth of objects in the scene, this thesis might also deal with the question of how additional depth information could be used to improve the result of models than usually just require two-dimensional images.
 How this depth information is best gathered will be a subject of the thesis itself.
 Lastly, it has been shown \cite{Nabavi2018, Pfeuffer2019} that using Convolutional Long-Short-Term-Memory (Conv-LSTM \cite{Shi2015}) layers help to improve the performance of already existing architectures.
@@ -244,7 +245,7 @@ Object detection is usually realized by framing the object with a box and assign
 Lastly, there is instance segmentation. 
 Instance segmentation extends the problem of object detection by a pixel-wise classification (similar to semantic segmentation) but with instances being differentiated \cite{Mittal2020}.
 See \figref{fig:Computer_Vision_Tasks} for an overview of the described tasks.
-Given the goal of this project, only semantic segmentation is necessary.
+Given the goal of this project, only binary semantic segmentation is necessary.
 Detailed information about which objects are in the scene is not required.
 \begin{figure}[H]
 	\centering
@@ -325,7 +326,7 @@ To achieve a high accuracy, training data will be generated.
 Since the main task is to separate humans (and objects they might carry), training data will be generated using a green screen.
 A green screen setup allows us to separate the background in a high quality manner using an alpha matting algorithm (\eg \cite{Gastal2010}).
 The background in the training data can be virtually replaced with backgrounds that will be used in the photo booth in the final product.
-This results in qualitatively high training data.
+This results in high quality training data.
 It is very likely, that the model will not be able to generalize very well beyond the given backgrounds, since the training data environment is very much controlled and fixed.
 However, the final model does not have to generalize beyond the given scenario anyway. 
 
@@ -365,10 +366,10 @@ The project will most likely use either the YOLACT++ model, which is open source
 	\begin{tabular}{|l|l|l|}
 	\hline
 	\textbf{Week} & \textbf{Date}           & \textbf{What will be done}                                                                                                          \\ \hline
-	1-2  		  & 01.04.2020 - 14.04.2020 & \begin{tabular}[c]{@{}l@{}}fixing the model that will be used, \\ fixing the topics that will be investigated\end{tabular} \\ \hline
+	1-2  		  & 01.04.2020 - 14.04.2020 & \begin{tabular}[c]{@{}l@{}}fixing the topics that will be investigated, \\fixing the model that will be used \end{tabular} \\ \hline
 	2-4  		  & 15.04.2020 - 28.04.2020 & \begin{tabular}[c]{@{}l@{}}preparing and recording training data, \\ preprocess training data\end{tabular}                 \\ \hline
 	4-8  		  & 29.04.2020 - 26.05.2020 & \begin{tabular}[c]{@{}l@{}}training the model, \\ evaluating and analysing the results, \\ start writing\end{tabular}      \\ \hline
-	8-12 		  & 27.05.2020 - 22.06.2020 & \begin{tabular}[c]{@{}l@{}}fix potential issues, \\ finish implementation, \\ finish writing,\end{tabular}                 \\ \hline
+	8-12 	 	  & 27.05.2020 - 22.06.2020 & \begin{tabular}[c]{@{}l@{}}fix potential issues, \\ finish implementation, \\ finish writing,\end{tabular}                 \\ \hline
 	12   		  & 23.06.2020              & finish thesis                                                                                                              \\ \hline
 	\end{tabular}
 \end{table}
