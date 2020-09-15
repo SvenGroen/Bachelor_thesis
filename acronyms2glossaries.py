@@ -21,8 +21,11 @@ except IndexError:
 glossary_entries = []
 glossaries_format = '\\newacronym{{{}}}{{{}}}{{{}}}'
 acronym_regex = re.compile('(.+?)\s\((.+)\)')
+skip = re.compile('\n')
 with open(filename, 'r') as acronym_file:
     for line in acronym_file:
+        if skip.match(line):
+            continue
         # Search the line for the acronym and its abbreviation.
         parsed = acronym_regex.match(line)
         if parsed:
